@@ -1,0 +1,11 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.so
+*.a
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
