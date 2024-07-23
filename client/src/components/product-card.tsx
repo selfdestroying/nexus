@@ -32,7 +32,7 @@ const addToCart = async (id: number) => {
 const ProductCard = ({ product }: { product: Product }) => {
 	const queryClient = useQueryClient()
 
-	const user = useUser()
+	const { user } = useUser()
 	const isInCart = useProductInCart(user?.cart, product.id)
 
 	const mutation = useMutation({
@@ -50,12 +50,16 @@ const ProductCard = ({ product }: { product: Product }) => {
 						alt='product1'
 						width={150}
 						height={150}
-						className={`w-full aspect-square object-cover ${
-							product.adult ? 'blur-xl' : ''
+						className={`w-full aspect-square object-cover object-top ${
+							product.adult && !user ? 'blur-xl' : ''
 						}`}
 					/>
 				</div>
-				<span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-red-400'>
+				<span
+					className={`absolute ${
+						!user ? 'top-1/2 left-1/2' : 'top-6 left-12'
+					} -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-red-400`}
+				>
 					{product.adult ? '18+' : null}
 				</span>
 			</CardHeader>

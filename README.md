@@ -2,7 +2,7 @@
 
 An online store application with a frontend built using Vite, React, React Router, React Query, ShadCN/UI, Axios, and Tailwind CSS. The backend is built using Python and Django REST Framework. The application is containerized using Docker, with Nginx serving the frontend and Gunicorn running the backend.
 
-![main page](https://i.ibb.co/1zfyV9g/main-page.png) ![products page](https://i.ibb.co/QDVt87d/products-page.png)
+![main page](https://kappa.lol/9l3Pn) ![products page](https://kappa.lol/feZKq)
 
 ## Table of Contents
 

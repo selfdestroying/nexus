@@ -6,8 +6,8 @@ from django.utils.text import slugify
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField()
-    icon = models.ImageField(upload_to='category_icons/', null=True, blank=True)
+    slug = models.SlugField(blank=True)
+    icon = models.ImageField(upload_to='category_icons/', null=True, blank=True, default='category_icons/placeholder.svg')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -38,9 +38,9 @@ class Product(models.Model):
         BROWN = 'brown'
         GRAY = 'gray'
     name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(null=True)
-    description = models.TextField()
-    image = models.ImageField(upload_to='product_images/', null=True)
+    slug = models.SlugField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='product_images/', null=True, default='product_images/placeholder.jpg')
     price = models.FloatField()
     quantity = models.IntegerField(null=True, default=1)
     width = models.FloatField()

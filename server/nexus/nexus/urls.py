@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
+
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
@@ -29,6 +29,8 @@ from nexusapi.views import (
 )
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from nexus import settings
 
 router = DefaultRouter()
 router.register('products', ProductViewSet, basename='products')
@@ -48,4 +50,4 @@ urlpatterns = [
     path('api/cart/create/', CartCreateApiView().as_view(), name='cart_create'),
     path('api/cart/<int:pk>/update/', CartUpdateApiView().as_view(), name='cart_update'),
     path('api/cart/<int:pk>/delete/', CartDeleteApiView().as_view(), name='cart_delete'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

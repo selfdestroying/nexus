@@ -80,7 +80,7 @@ const CartProductCart = ({ cart }: { cart: Cart }) => {
 					alt=''
 					width={50}
 					height={50}
-					className='rounded-md aspect-square object-cover w-full h-full'
+					className='rounded-md aspect-square object-top object-cover w-full h-full'
 				/>
 			</CardHeader>
 			<CardContent className='h-full p-3 flex flex-auto flex-col justify-between items-start text-left'>

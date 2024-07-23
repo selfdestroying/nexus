@@ -16,12 +16,16 @@ const fetchUser = async () => {
 }
 
 export const useUser = () => {
-	const { data: user } = useQuery<User>({
+	const {
+		data: user,
+		isError,
+		error,
+	} = useQuery<User>({
 		queryKey: ['user'],
 		queryFn: fetchUser,
 		refetchOnWindowFocus: false,
 		staleTime: Infinity,
 	})
 
-	return user
+	return { user, isError, error }
 }

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
-
 from nexusapi.models import Cart, Category, Product
+from rest_framework import serializers
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -33,6 +32,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password', 'cart']
         extra_kwargs = {'password': {'write_only': True}}
         depth = 1
+    
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     if instance.is_authenticated:
+    #         data['cart'] = CartSerializer(instance.cart, many=True).data
+    #     return data
+    
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])

@@ -1,8 +1,4 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, pagination, permissions, status, viewsets
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-
 from nexusapi.models import Cart, Category, Product
 from nexusapi.serializers import (
     CartSerializer,
@@ -11,6 +7,9 @@ from nexusapi.serializers import (
     ProductSerializer,
     UserSerializer,
 )
+from rest_framework import generics, pagination, permissions, status, viewsets
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Create your views here.

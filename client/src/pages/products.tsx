@@ -13,7 +13,7 @@ const initialFilters: Filter[] = [
 		slug: 'price',
 		type: 'range',
 		min: 0,
-		max: 100,
+		max: 200,
 		value: {
 			from: 0,
 			to: 0,
@@ -25,7 +25,7 @@ const initialFilters: Filter[] = [
 		slug: 'width',
 		type: 'range',
 		min: 0,
-		max: 100,
+		max: 200,
 		value: {
 			from: 0,
 			to: 0,
@@ -36,7 +36,7 @@ const initialFilters: Filter[] = [
 		slug: 'height',
 		type: 'range',
 		min: 0,
-		max: 100,
+		max: 200,
 		value: {
 			from: 0,
 			to: 0,

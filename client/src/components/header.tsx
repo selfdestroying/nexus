@@ -20,14 +20,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 
 const Header = () => {
 	const queryClient = useQueryClient()
-	const user = useUser()
+	const { user } = useUser()
 	const { data } = useRequestCategories()
 	const logout = () => {
 		localStorage.removeItem('access_token')
 		localStorage.removeItem('refresh_token')
 		queryClient.invalidateQueries({ queryKey: ['user'] })
 	}
-
 	return (
 		<header className='flex items-center justify-between p-4'>
 			<Link to='/'>Nexus</Link>
@@ -51,7 +50,7 @@ const Header = () => {
 				/>
 			</div>
 			<div className='flex items-center gap-4'>
-				{user ? (
+				{user?.cart ? (
 					<>
 						<Cart user={user} />
 						<Profile user={user} logout={logout} />

@@ -23,7 +23,7 @@ const Filters: FC<FiltersProps> = ({
 		const newQueryParams = applyFilters()
 		setqueryParamsString(
 			`products/?limit=12&${
-				params.category ? 'category_slug=' + params.category : ''
+				params.category ? `category_slug=${params.category}&` : ''
 			}` + newQueryParams
 		)
 	}
