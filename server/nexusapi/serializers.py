@@ -15,18 +15,36 @@ class ProductSerializer(serializers.ModelSerializer):
         depth = 1
         
 class CartSerializer(serializers.ModelSerializer):
+    direction = serializers.IntegerField(allow_null=True)
     class Meta:
         model = Cart
-        fields = ['id', 'product', 'quantity']
-        depth = 2
+        fields = ['id', 'product', 'quantity', 'direction']
+        depth = 2 
+    
+    
+    def update(self, instance, validated_data):
+        print(validated_data)
+
+        direction = validated_data['direction']
+        if direction == 1:
+            Product.objects.filter(id=instance.product.id).update(quantity=instance.product.quantity - 1)
+        elif direction == -1:
+            Product.objects.filter(id=instance.product.id).update(quantity=instance.product.quantity + 1)
+        return super().update(instance, validated_data)
+    
         
 class CreateCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'product', 'quantity']
         
+    def create(self, validated_data):
+        print(validated_data)
+        Product.objects.filter(id=validated_data['product'].id).update(quantity=validated_data['product'].quantity - 1)
+        return Cart.objects.create(**validated_data)
+        
 class UserSerializer(serializers.ModelSerializer):
-    cart = CartSerializer(many=True)
+    cart = CartSerializer(many=True, read_only=True)
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password', 'cart']

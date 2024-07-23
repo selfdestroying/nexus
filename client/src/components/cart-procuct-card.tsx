@@ -8,9 +8,11 @@ import { Card, CardContent, CardFooter, CardHeader } from './ui/card'
 const updateQuantity = async ({
 	id,
 	quantity,
+	direction,
 }: {
 	id: number
 	quantity: number
+	direction: number
 }) => {
 	const accessToken = localStorage.getItem('access_token')
 
@@ -20,13 +22,21 @@ const updateQuantity = async ({
 	const response = await fetch(`http://127.0.0.1:8000/api/cart/${id}/update/`, {
 		method: 'PATCH',
 		headers,
-		body: JSON.stringify({ quantity }),
+		body: JSON.stringify({ quantity, direction }),
 	})
 	const data = await response.json()
 	return data
 }
 
-const deleteProduct = async (id: number) => {
+const deleteProduct = async ({
+	id,
+	quantity,
+	productId,
+}: {
+	id: number
+	quantity: number
+	productId: number
+}) => {
 	const accessToken = localStorage.getItem('access_token')
 
 	const headers = new Headers()
@@ -35,6 +45,7 @@ const deleteProduct = async (id: number) => {
 	const response = await fetch(`http://127.0.0.1:8000/api/cart/${id}/delete/`, {
 		method: 'DELETE',
 		headers,
+		body: JSON.stringify({ id: productId, quantity }),
 	})
 	console.log()
 	console.log(response)
@@ -42,7 +53,9 @@ const deleteProduct = async (id: number) => {
 
 const CartProductCart = ({ cart }: { cart: Cart }) => {
 	const [quantity, setQuantity] = useState(cart.quantity)
+
 	const [price, setPrice] = useState(cart.product.price)
+	const queryClient = useQueryClient()
 
 	const updateMutation = useMutation({
 		mutationFn: updateQuantity,
@@ -52,7 +65,6 @@ const CartProductCart = ({ cart }: { cart: Cart }) => {
 		},
 	})
 
-	const queryClient = useQueryClient()
 	const deleteMutation = useMutation({
 		mutationFn: deleteProduct,
 		onSuccess: _ => {
@@ -61,11 +73,19 @@ const CartProductCart = ({ cart }: { cart: Cart }) => {
 	})
 
 	const incrementQuantity = () => {
-		updateMutation.mutate({ id: cart.id, quantity: cart.quantity + 1 })
+		updateMutation.mutate({
+			id: cart.id,
+			quantity: cart.quantity + 1,
+			direction: 1,
+		})
 	}
 
 	const decrementQuantity = () => {
-		updateMutation.mutate({ id: cart.id, quantity: cart.quantity - 1 })
+		updateMutation.mutate({
+			id: cart.id,
+			quantity: cart.quantity - 1,
+			direction: -1,
+		})
 	}
 
 	useEffect(() => {
@@ -101,7 +121,7 @@ const CartProductCart = ({ cart }: { cart: Cart }) => {
 						size={'icon'}
 						className='size-fit p-1'
 						onClick={incrementQuantity}
-						disabled={cart.quantity === cart.product.quantity}
+						disabled={cart.quantity >= cart.product.quantity + cart.quantity}
 					>
 						<PlusIcon className='h-4 w-4' />
 					</Button>
@@ -112,7 +132,13 @@ const CartProductCart = ({ cart }: { cart: Cart }) => {
 				<Button
 					variant={'outline'}
 					className='size-fit p-1'
-					onClick={() => deleteMutation.mutate(cart.id)}
+					onClick={() =>
+						deleteMutation.mutate({
+							id: cart.id,
+							productId: cart.product.id,
+							quantity,
+						})
+					}
 				>
 					<Trash2Icon className='h-4 w-4' />
 				</Button>

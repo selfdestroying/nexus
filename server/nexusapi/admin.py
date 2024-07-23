@@ -20,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     exclude = ['slug']
-    list_display = ['name', 'price', 'width', 'height', 'material', 'color', 'adult', 'category']
+    list_display = ['name', 'price', 'width', 'height', 'material', 'color', 'adult', 'category', 'quantity']
     
 
 @admin.register(Cart)

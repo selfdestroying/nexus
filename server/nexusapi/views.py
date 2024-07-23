@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import F
 from nexusapi.models import Cart, Category, Product
 from nexusapi.serializers import (
     CartSerializer,
@@ -8,6 +9,7 @@ from nexusapi.serializers import (
     UserSerializer,
 )
 from rest_framework import generics, pagination, permissions, status, viewsets
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -27,6 +29,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     pagination_class = pagination.LimitOffsetPagination
 
     def get_queryset(self):
+        assert isinstance(self.request, Request)
         slug = self.request.query_params.get('category_slug')
         if slug:
             products = Product.objects.filter(category__slug=slug)
@@ -84,20 +87,24 @@ class ProductByCategory(viewsets.ModelViewSet):
 
 class RegistrationApiView(generics.CreateAPIView):
 
-    def post(self, request):
-
-        serializer = UserSerializer(data=request.data)
+    def post(self, request: Request):
+        user = request.data
+        assert isinstance(user, dict)
+        user['cart'] = []
+        print(user)
+        serializer = UserSerializer(data=user)
 
         if serializer.is_valid():
             
             user = serializer.create(serializer.validated_data)
+            assert isinstance(user, User)
             user.save()
             
             refresh = RefreshToken.for_user(user) # Создание Refesh и Access
 
             refresh.payload.update({    # Полезная информация в самом токене
 
-                'user_id': user.id,
+                'user_id': user.pk,
 
                 'username': user.username
 
@@ -107,7 +114,7 @@ class RegistrationApiView(generics.CreateAPIView):
 
                 'refresh': str(refresh),
 
-                'access': str(refresh.access_token), # Отправка на клиент
+                'access': str(refresh.access_token), # Отправка на клиент # type: ignore
 
             }, status=status.HTTP_201_CREATED)
 
@@ -119,12 +126,20 @@ class CartUpdateApiView(generics.UpdateAPIView):
     serializer_class = CartSerializer
     pagination_class = None
     permission_classes = [permissions.IsAuthenticated]
+    def update(self, request, *args, **kwargs):
+        print('view', request.data)
+        return super().update(request, *args, **kwargs)
     
 class CartDeleteApiView(generics.DestroyAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     pagination_class = None
     permission_classes = [permissions.IsAuthenticated]
+    
+    def delete(self, request, *args, **kwargs):
+        quantity = request.data['quantity']
+        Product.objects.filter(id=request.data['id']).update(quantity=F('quantity') + quantity)
+        return super().delete(request, *args, **kwargs)
     
 class CartCreateApiView(generics.CreateAPIView):
     queryset = Cart.objects.all()

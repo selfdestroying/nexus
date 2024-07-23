@@ -47,7 +47,7 @@ class SVGAndImageFormField(DjangoImageField):
 
             # Annotating so subclasses can reuse it for their own validation
             test_file.image = image
-            test_file.content_type = Image.MIME[image.format]
+            test_file.content_type = Image.MIME[image.format or "jpg"]
         except Exception:
             # add a workaround to handle svg images
             if not self.is_svg(ifile):
